@@ -31,6 +31,10 @@
  }
 //The username must contain at least two unique characters.
 
+  if(username < 2) {
+    showError("user name must be atleast 2 characters long", 'username' , event);
+  }
+
 //The username cannot contain any special characters or whitespace.
 
  } )

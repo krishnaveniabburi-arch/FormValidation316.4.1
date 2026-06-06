@@ -1,8 +1,8 @@
 
-// using form ID
+// USING FORM ID
 
 const form = document.querySelector('form');
-const errorDisplay = document.getElementsById('errorDisplay');
+const errorDisplay = document.querySelector('errorDisplay');
 
 // You can place any text or HTML into errorDisplay
 
@@ -14,7 +14,7 @@ form.addEventListener('submit', function (event) {
 
 
 
-  //The username cannot be blank
+  //THE USER NAME CAN NOT BE BLANK
 
 
   let username = usernameInput.value.trim();
@@ -138,7 +138,7 @@ form.addEventListener('submit', function (event) {
   users.push(newUser);
   localStorage.setItem("users", JSON.stringify(users));
 
-// SUCCESS
+  // SUCCESS
 
   form.reset();
   alert("Registration successful!");
@@ -161,7 +161,7 @@ loginForm.addEventListener("submit", function (e) {
 
   // PART--4--------- 
   // USERNAME VALIDATION
-  
+
   if (!username) {
     errors.push("Username cannot be blank.");
   }
@@ -171,35 +171,34 @@ loginForm.addEventListener("submit", function (e) {
   const users = JSON.parse(localStorage.getItem("users")) || [];
 
   const foundUser = users.find(
-    (user) => user.username === usernameLower
-  );
+    (user) => user.username === usernameLower);
 
   if (username && !foundUser) {
     errors.push("Username does not exist.");
   }
 
-  
+
   // PASSWORD VALIDATION
-  
-   if (!password) {
+
+  if (!password) {
     errors.push("Password cannot be blank.");
   }
 
   if (foundUser && password !== foundUser.password) {
-     errors.push("Incorrect password.");
+    errors.push("Incorrect password.");
   }
 
-  
+
   // FINAL CHECK
-  
-   if (errors.length > 0) {
+
+  if (errors.length > 0) {
     alert(errors.join("\n"));
     return;
   }
 
   // SUCCESS
-  
-   loginForm.reset();
+
+  loginForm.reset();
 
   if (keepLoggedInInput.checked) {
     alert(`Welcome back, ${usernameLower}! You will remain logged in.`);

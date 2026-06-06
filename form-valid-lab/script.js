@@ -1,40 +1,163 @@
- 
- // using form ID
 
- const form = document.querySelector('form');
- const errorDisplay = document.getElementsById('errorDisplay');
+// using form ID
 
- // You can place any text or HTML into errorDisplay
+const form = document.querySelector('form');
+const errorDisplay = document.getElementsById('errorDisplay');
 
- form.addEventListener('submit', function(event) {
-    // clears previous errors and hide display
+// You can place any text or HTML into errorDisplay
 
-    errorDisplay.textContent = '';
-    errorDisplay.style.display = 'none';
+form.addEventListener('submit', function (event) {
+  // clears previous errors and hide display
 
-    const username = document.getElementById('username');
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
+  errorDisplay.textContent = '';
+  errorDisplay.style.display = 'none';
 
-//The username cannot be blank
 
-  if(!username) {
-    showError("user name can not be blank", 'username', event);
+
+  //The username cannot be blank
+
+
+  let username = usernameInput.value.trim();
+  let email = emailInput.value.trim();
+  let password = passwordInput.value;
+  let confirmPassword = confirmPasswordInput.value;
+
+  const errors = [];
+
+
+  // USERNAME VALIDATION
+
+
+  if (!username) {
+    errors.push("Username cannot be blank.");
+  }
+
+  if (username.length < 4) {
+    errors.push("Username must be at least 4 characters long.");
+  }
+
+  // At least 2 unique characters
+  const uniqueChars = new Set(username);
+  if (uniqueChars.size < 2) {
+    errors.push("Username must contain at least two unique characters.");
+  }
+
+  // No special chars or whitespace
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  if (!usernameRegex.test(username)) {
+    errors.push("Username cannot contain special characters or spaces.");
+  }
+
+  // Convert to lowercase for storage/comparison
+  const usernameLower = username.toLowerCase();
+
+  // Check uniqueness
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const usernameExists = users.some(
+    (user) => user.username === usernameLower
+  );
+
+  if (usernameExists) {
+    errors.push("That username is already taken.");
+  }
+
+
+  // EMAIL VALIDATION
+
+
+  const emailLower = email.toLowerCase();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    errors.push("Email must be valid.");
+  }
+
+  if (emailLower.endsWith("@example.com")) {
+    errors.push("Email domain 'example.com' is not allowed.");
+  }
+
+
+  // PASSWORD VALIDATION
+
+
+  if (password.length < 12) {
+    errors.push("Password must be at least 12 characters long.");
+  }
+
+  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
+    errors.push("Password must include uppercase and lowercase letters.");
+  }
+
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must include at least one number.");
+  }
+
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push("Password must include at least one special character.");
+  }
+
+  if (/password/i.test(password)) {
+    errors.push("Password cannot contain the word 'password'.");
+  }
+
+  if (password.toLowerCase().includes(usernameLower)) {
+    errors.push("Password cannot contain the username.");
+  }
+
+  if (password !== confirmPassword) {
+    errors.push("Passwords must match.");
+  }
+
+
+  // TERMS VALIDATION
+
+
+  if (!termsInput.checked) {
+    errors.push("You must accept the terms and conditions.");
+  }
+
+
+  // FINAL CHECK
+
+
+  if (errors.length > 0) {
+    alert(errors.join("\n"));
     return;
   }
-  
+
+
+  // STORE USER
+  const newUser = {
+    username: usernameLower,
+    email: emailLower,
+    password: password // (Note: In real apps, NEVER store plain passwords)
+  };
+
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+
+// SUCCESS
+
+  form.reset();
+  alert("Registration successful!");
+});
+
+if (!username) {
+  showError("user name can not be blank", 'username', event);
+  return;
+}
+
 //The username must be at least four characters long.
 
- if (username < 4) {
-    showError("username must be atleast four characters long", 'username', event);
-    return;
- }
+if (username < 4) {
+  showError("username must be atleast four characters long", 'username', event);
+  return;
+}
 //The username must contain at least two unique characters.
 
-  if(username < 2) {
-    showError("user name must be atleast 2 characters long", 'username' , event);
-  }
+if (username < 2) {
+  showError("user name must be atleast 2 characters long", 'username', event);
+}
 
-//The username cannot contain any special characters or whitespace.
-
- } )

@@ -144,20 +144,66 @@ form.addEventListener('submit', function (event) {
   alert("Registration successful!");
 });
 
-if (!username) {
-  showError("user name can not be blank", 'username', event);
-  return;
-}
+const loginForm = document.querySelector("#loginForm");
 
-//The username must be at least four characters long.
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-if (username < 4) {
-  showError("username must be atleast four characters long", 'username', event);
-  return;
-}
-//The username must contain at least two unique characters.
+  // Inputs
+  const usernameInput = document.querySelector("#loginUsername");
+  const passwordInput = document.querySelector("#loginPassword");
+  const keepLoggedInInput = document.querySelector("#keepLoggedIn");
 
-if (username < 2) {
-  showError("user name must be atleast 2 characters long", 'username', event);
-}
+  let username = usernameInput.value.trim();
+  let password = passwordInput.value;
 
+  const errors = [];
+
+  // PART--4--------- 
+  // USERNAME VALIDATION
+  
+  if (!username) {
+    errors.push("Username cannot be blank.");
+  }
+
+  const usernameLower = username.toLowerCase();
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const foundUser = users.find(
+    (user) => user.username === usernameLower
+  );
+
+  if (username && !foundUser) {
+    errors.push("Username does not exist.");
+  }
+
+  
+  // PASSWORD VALIDATION
+  
+   if (!password) {
+    errors.push("Password cannot be blank.");
+  }
+
+  if (foundUser && password !== foundUser.password) {
+     errors.push("Incorrect password.");
+  }
+
+  
+  // FINAL CHECK
+  
+   if (errors.length > 0) {
+    alert(errors.join("\n"));
+    return;
+  }
+
+  // SUCCESS
+  
+   loginForm.reset();
+
+  if (keepLoggedInInput.checked) {
+    alert(`Welcome back, ${usernameLower}! You will remain logged in.`);
+  } else {
+    alert(`Welcome back, ${usernameLower}!`);
+  }
+});
